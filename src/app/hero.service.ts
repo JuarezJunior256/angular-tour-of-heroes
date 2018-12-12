@@ -17,6 +17,15 @@ export class HeroService {
     // mensagem é adiciona a classe de serviço de mensagem
     // para quando a página é carregada
     this.messageService.add('HeroService: buscando Herois');
-     return of(HEROIS);
+    return of(HEROIS);
+  }
+
+  // metodo para buscar dados de uma constante de array, simulando um json, com um id em especifico
+  getHeroi(id: number): Observable<Heroi> {
+
+    // mensagem é adiciona a classe de serviço de mensagem
+    // para quando a página é carregada
+    this.messageService.add(`HeroService: buscando Herois id=${id}`);
+    return of(HEROIS.find(heroi => heroi.id === id));
   }
 }
