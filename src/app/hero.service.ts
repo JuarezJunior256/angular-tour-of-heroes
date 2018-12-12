@@ -3,8 +3,12 @@ import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
 import { MessageService } from './message.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Heroi } from './mode/hero.model';
+
+const httpOptions = {
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+};
 
 @Injectable({
   providedIn: 'root'
@@ -40,6 +44,14 @@ export class HeroService {
   // metodo para enviar mensagens para MessageService
   private log(message: string) {
     this.messageService.add(`HeroService: ${message}`);
+  }
+
+  // metodo para fazer update na lista
+  updateHeroi(heroi: Heroi): Observable<any> {
+    return this.http.put(this.heroisUrl, heroi, httpOptions).pipe(
+        tap(_ => this.log(`update hero id=${heroi.id}`)),
+        catchError(this.handleError<any>('updateHeroi'))
+    );
   }
 
 
