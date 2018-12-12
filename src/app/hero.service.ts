@@ -1,31 +1,65 @@
 import { Injectable } from '@angular/core';
-import { Heroi } from './mode/hero.model';
 import { Observable, of } from 'rxjs';
-import { HEROIS } from './ mock-heroes';
+import { catchError, map, tap } from 'rxjs/operators';
+
 import { MessageService } from './message.service';
+import { HttpClient } from '@angular/common/http';
+import { Heroi } from './mode/hero.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HeroService {
 
-  constructor(private messageService: MessageService) { }
+  // URL para web api
+  private heroisUrl = 'api/herois';
 
-  // metodo para buscar dados de uma constante de array, simulando um json
+  constructor(private messageService: MessageService,
+              private http: HttpClient) { }
+
+  // metodo para buscar dados via http de uma web api
   getHerois(): Observable<Heroi[]> {
 
-    // mensagem é adiciona a classe de serviço de mensagem
-    // para quando a página é carregada
-    this.messageService.add('HeroService: buscando Herois');
-    return of(HEROIS);
+    return this.http.get<Heroi[]>(this.heroisUrl)
+              .pipe(
+                tap(_ => this.log('Herois Buscados')),
+                catchError(this.handleError('getHerois', []))
+              );
   }
 
-  // metodo para buscar dados de uma constante de array, simulando um json, com um id em especifico
+  // metodo para buscar dados por id por uma web api
   getHeroi(id: number): Observable<Heroi> {
+    const url = `${this.heroisUrl}/${id}`;
 
-    // mensagem é adiciona a classe de serviço de mensagem
-    // para quando a página é carregada
-    this.messageService.add(`HeroService: buscando Herois id=${id}`);
-    return of(HEROIS.find(heroi => heroi.id === id));
+    return this.http.get<Heroi>(url).pipe(
+      tap(_ => this.log(`Heroi Buscado id=${id}`)),
+      catchError(this.handleError<Heroi>(`getHeroi id=${id}`))
+    );
+  }
+
+  // metodo para enviar mensagens para MessageService
+  private log(message: string) {
+    this.messageService.add(`HeroService: ${message}`);
+  }
+
+
+  /*
+  * Handle operação HTTP que falhou.
+  * Deixe o aplicativo continuar.
+  * @param operation - nome da operação que falhou
+  * @param result - valor opcional para retornar como resultado observável
+  * */
+
+  private handleError<T> (operation = 'operation', restult?: T) {
+    return (error: any): Observable<T> => {
+        // enviar o erro para a infraestrutura de registro remoto
+        console.error(error);
+
+        // melhor trabalho de transformar erro para consumo do usuário
+        this.log(`${operation} failed: ${error.message}`);
+
+        // Deixe o aplicativo continuar executando retornando um resultado vazio.
+        return of(restult as T);
+    };
   }
 }
