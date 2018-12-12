@@ -1,5 +1,6 @@
 import { Heroi } from './mode/hero.model';
 
+// array com nomes de herois simulando um objeto json
 export const HEROIS: Heroi[] = [
   { id: 11, nome: 'Mr. Nice' },
   { id: 12, nome: 'Narco' },
