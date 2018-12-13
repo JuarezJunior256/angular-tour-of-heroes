@@ -41,11 +41,6 @@ export class HeroService {
     );
   }
 
-  // metodo para enviar mensagens para MessageService
-  private log(message: string) {
-    this.messageService.add(`HeroService: ${message}`);
-  }
-
   // metodo para fazer update na lista
   updateHeroi(heroi: Heroi): Observable<any> {
     return this.http.put(this.heroisUrl, heroi, httpOptions).pipe(
@@ -54,6 +49,19 @@ export class HeroService {
     );
   }
 
+  // metedo para adicinar na lista
+  addHeroi(heroi: Heroi): Observable<Heroi> {
+    return this.http.post<Heroi>(this.heroisUrl, heroi, httpOptions).pipe(
+      // tslint:disable-next-line:no-shadowed-variable
+      tap((heroi: Heroi) => this.log(`add heroi id=${heroi.id}`)),
+      catchError(this.handleError<Heroi>('AddHeroi'))
+    );
+  }
+
+  // metodo para enviar mensagens para MessageService
+  private log(message: string) {
+    this.messageService.add(`HeroService: ${message}`);
+  }
 
   /*
   * Handle operação HTTP que falhou.

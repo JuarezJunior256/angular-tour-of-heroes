@@ -7,4 +7,13 @@
   </li>
 </ul>
 
+<div>
+  <label>Nome do Heroi:
+    <input #heroiNome/>
+  </label>
+  <!-- (click) passa o valor de entrada para add() e depois limpa a entrada - -->
+  <button (click)="add(heroiNome.value); heroiNome.value=''">
+    Adiciona
+  </button>
+</div>
 
