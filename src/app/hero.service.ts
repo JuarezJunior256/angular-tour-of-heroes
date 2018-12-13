@@ -69,6 +69,19 @@ export class HeroService {
      );
   }
 
+  // metodo para exibir um retorno de busca
+  buscarHerois(term: string): Observable<Heroi[]> {
+    if ( !term.trim() ) {
+     // se não for um termo de pesquisa, retorne um array de heróis vazio.
+     return of([]);
+    }
+
+    return this.http.get<Heroi[]>(`${this.heroisUrl}/?nome=${term}`).pipe(
+      tap(_ => this.log(`Heroi pesquisado, "${term}" foi encontrado`)),
+      catchError(this.handleError<Heroi[]>('buscaHerois', []))
+    );
+  }
+
   // metodo para enviar mensagens para MessageService
   private log(message: string) {
     this.messageService.add(`HeroService: ${message}`);

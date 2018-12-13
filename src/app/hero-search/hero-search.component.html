@@ -1,0 +1,13 @@
+<div id="search-component">
+  <h4>Buscar Heroi</h4>
+
+  <input #buscarBox id="search-box" (input)="buscar(buscarBox.value)"/>
+
+  <ul class="search-result">
+    <li *ngFor="let heroi of herois$ | async" >
+      <a routerLink="/deital/{{heroi.id}}">
+        {{heroi.nome}}
+      </a>
+    </li>
+  </ul>
+</div>
