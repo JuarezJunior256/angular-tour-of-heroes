@@ -58,6 +58,17 @@ export class HeroService {
     );
   }
 
+  // metodo para excluir da lista
+  deleteHeroi(heroi: Heroi | number): Observable<Heroi> {
+     const id  = typeof heroi === 'number' ? heroi : heroi.id;
+     const url = `${this.heroisUrl}/${id}`;
+
+     return this.http.delete<Heroi>(url, httpOptions).pipe(
+       tap(_ => this.log(`delete heroi id=${id}`)),
+       catchError(this.handleError<Heroi>('DeleteHeroi'))
+     );
+  }
+
   // metodo para enviar mensagens para MessageService
   private log(message: string) {
     this.messageService.add(`HeroService: ${message}`);
